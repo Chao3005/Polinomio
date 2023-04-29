@@ -11,7 +11,7 @@ public class Polinomio{
     //Constructores
     public Polinomio(Collection<Monomio> c){
         lista=new LinkedList();
-        Iterator<Monomio> it= c.iterator(); //xq es iterador de E? lo cambie a Monomio
+        Iterator<E> it= c.iterator(); //xq es iterador de E? lo cambie a Monomio
         maxExponent=0; //
         for(Monomio mono : c){
             Monomio newmono;
@@ -22,34 +22,42 @@ public class Polinomio{
         }
     }
 
-    public Polinomio simplifica(Collection<Monomio> c){
-        Iterator<E> it=c.iterator();
-        for(Monomio mono : c){ //Vamos a ver si la colección tiene a monomios con exponentes iguales
-            if(mono.getExponente()==it.next().getExponente()){ //si el exponente es igual que al exponente del siguiente monomio entonces se suman los coeficientes
-                Monomio suma= new Monomio(mono.getCoeficiente()+it.next().getCoeficiente(), mono.getExponente());
+    public Polinomio simplifica(){
+        Iterator it= new iterator(); //iterador que itera sobre la lista xd
+        for(Monomio mono : lista){
+            if(mono.getExponente()==it.next().getExponente()){ //si mono tiene el mismo exponente que el siguiente mono
+                remove(); //quita a mono
+                it.next().remove(); //quita al siguiente
+                Monomio suma; new Monomio(mono.getCoeficiente()+ it.next().getCoeficiente(), mono.getExponente()); 
+                lista.add(suma); //agrega a la lista un nuevo mono' con mismo exponente que mono pero con el coeficiente sumado con el siguiente
+            }//Esta mal porque puede pasar que el coeficiente sea 0 y se muera, no sé cuando usar it.(algo) y cuando lista.(algo), y y y estoy truste
+        }
+        Polinomio polinomio= new Polinomio(lista); //Se crea polinomio nuevo con la lista de monomios ya sumados
+        return polinomio;        
+    }
+
+    public Polinomio ordena(){//Suponiendo que ya esta simplificado
+        LinkedList ordenada= new LinkedList(); //Se crea nueva lista ordenada
+        Iterator it= iterator(); //iterador que va a iterar sobre esa lista
+        for(int i=0; i<maxExponent+1; i++){ 
+            ordenada.add(null); //va a rellenar maxExponent + 1 veces de null
+        }
+        while(it.hasNext()){ //mientras esa lista tenga siguiente
+            if(it.next()==null){ //si es igual a null
+                remove(); //va a quitar ese null 
+                add(lista.next()); //va a adear el primer elemento de la lista que tiene a los monomios ordenados
             }
-            Polinomio simplificado= new Polinomio(c);
-            return simplificado; //se regresa un polinomio nuevo con la colección de monomios pero (según yo con cada monomio de distintos exponentes, es decir, simplificada XD);
+            //Esta mal xq no sé usar iteradores yy y y y y y no sé xq se llena de nulls y y y quiero llorar
         }
+        Polinomio polinado= new Polinomio(ordenada);
+        return polinado;
+    }
+
+    public Polinomio por(){
         return null;
     }
 
-    public Polinomio ordena(Polinomio polinomio){//Suponiendo que ya esta simplificado
-        LinkedList listaNueva= new LinkedList(); //lista con nulls 
-        Iterator it= new iterator(); //Se itera sobre la lista con nulls
-        while(listaNueva.next()==null){ //no sé cuando usar lista.(algo) y cuando it.(algo)
-            listaNueva.remove(); //borra los nulls
-            listaNueva.add(listas.next()); //Nambre, ni idea de como agregar a mi lista listaNueva los monomios de mayor exp a menor exp, help
-        }
-        Polinomio ordenado= new Polinomio(listaNueva); //Creamos un nuevo Polinomio ordenado 
-        return ordenado;
-    }
-
-    public Polinomio producto(){
-        return null;
-    }
-
-    public Polinomio suma(){
+    public Polinomio mas(){
         return null;
     }
 
