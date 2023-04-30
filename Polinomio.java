@@ -1,6 +1,7 @@
 package ed.aplicaciones.algebra;
 import java.util.LinkedList;
 import java.util.Collection;
+import java.util.IntSummaryStatistics;
 import java.util.Iterator;
 
 public class Polinomio{
@@ -11,8 +12,7 @@ public class Polinomio{
     //Constructores
     public Polinomio(Collection<Monomio> c){
         lista=new LinkedList();
-        Iterator<E> it= c.iterator(); //xq es iterador de E? lo cambie a Monomio
-        maxExponent=0; //
+        maxExponent=0; 
         for(Monomio mono : c){
             Monomio newmono;
             lista.add(new Monomio(mono));
@@ -22,22 +22,62 @@ public class Polinomio{
         }
     }
 
-    public Polinomio simplifica(){
-        Iterator it= new iterator(); //iterador que itera sobre la lista xd
-        for(Monomio mono : lista){
-            if(mono.getExponente()==it.next().getExponente()){ //si mono tiene el mismo exponente que el siguiente mono
-                remove(); //quita a mono
-                it.next().remove(); //quita al siguiente
-                Monomio suma; new Monomio(mono.getCoeficiente()+ it.next().getCoeficiente(), mono.getExponente()); 
-                lista.add(suma); //agrega a la lista un nuevo mono' con mismo exponente que mono pero con el coeficiente sumado con el siguiente
-            }//Esta mal porque puede pasar que el coeficiente sea 0 y se muera, no sé cuando usar it.(algo) y cuando lista.(algo), y y y estoy truste
+    public Polinomio simplifica(){ 
+        LinkedList<Monomio> newList= new LinkedList();
+        newList.addAll(lista);
+        for(int i=0;i<newList.size();i++){ //length: atributo de arreglo(es como tam, no se puede modificar), size: método que regresa número de elementos) (puede tener length 5 pero estar vacio y tener 0 size)
+            for(int j=i+1; j<newList.size(); j++){
+                Monomio monomio=newList.get(i);
+                Monomio monomioDos= newList.get(j);
+                if(monomio.getExponente()==monomioDos.getExponente()){
+                    newList.remove(monomio);
+                    newList.remove(monomioDos);
+                    if(monomio.getCoeficiente()+ monomioDos.getCoeficiente()!=0){
+                        Monomio nuevo= new Monomio(monomio.getCoeficiente()+monomioDos.getCoeficiente(), monomio.getExponente());
+                        newList.add(i,nuevo);
+                        j--;
+                    }
+                    else{
+                        i--;
+                        break;
+                    }
+                }
+            }
         }
-        Polinomio polinomio= new Polinomio(lista); //Se crea polinomio nuevo con la lista de monomios ya sumados
-        return polinomio;        
+        Polinomio polinomio= new Polinomio(newList);
+        return polinomio;
     }
 
-    public Polinomio ordena(){//Suponiendo que ya esta simplificado
+    public Polinomio ordena(){//Suponiendo que ya esta simplificado (No sé como verificar que sí esta simplificada)
         LinkedList ordenada= new LinkedList(); //Se crea nueva lista ordenada
+        for(int i=0; i<maxExponent+1; i++){ 
+            ordenada.add(null); //va a rellenar maxExponent + 1 veces de null 
+        }
+        for(int i=0; i<lista.size(); i++){ //para cada monomio en lista
+            ordenada.remove(maxExponent-lista.get(i).getExponente()); //se va a eliminar lo que este en el indice maxExponent-Exponente del monomio
+            ordenada.add(maxExponent-lista.get(i).getExponente(), lista.get(i));//(Ej, si el maxExp es 5 y el exp del monomio es 5, entonces va a borrar el null del indice 0)
+        } //y se va a agregar en el indice 0 el monomio con mayor exponente
+        for(int j=0; j<maxExponent;j++){ //Para eliminar los nulls (si le pongo maxExpo+1 hay error en indice unu)
+            if(ordenada.get(j)==null){ //si el indice j es null entonces lo borra
+                ordenada.remove(j); //si no es null lo deja y pasa al siguiente indice
+            }
+        }
+        Polinomio polinado= new Polinomio(ordenada); //no sé xq me da NullPointerException unu
+        return polinado; //Estoy truste unu
+    }
+
+      /*for(int j=0;j<lista.size();j++){
+            ordenada.remove(maxExponent-lista.get(j).getExponente());
+            ordenada.add(maxExponent-lista.get(j).getExponente(), lista.get(j));
+        }
+        it.remove(null);
+        while(it.hasNext()){
+            if(it.next()==null){
+                it.remove();
+            }
+        }*/
+
+     /*LinkedList ordenada= new LinkedList(); //Se crea nueva lista ordenada
         Iterator it= iterator(); //iterador que va a iterar sobre esa lista
         for(int i=0; i<maxExponent+1; i++){ 
             ordenada.add(null); //va a rellenar maxExponent + 1 veces de null
@@ -50,9 +90,7 @@ public class Polinomio{
             //Esta mal xq no sé usar iteradores yy y y y y y no sé xq se llena de nulls y y y quiero llorar
         }
         Polinomio polinado= new Polinomio(ordenada);
-        return polinado;
-    }
-
+        return polinado;*/
     public Polinomio por(){
         return null;
     }
@@ -63,7 +101,11 @@ public class Polinomio{
 
     @Override
     public String toString(){
-        return null;
+        String cadena="";
+        for(Monomio m : lista){
+            cadena+=m.toString()+"\n";
+        }
+        return cadena;
     }
 
 }
