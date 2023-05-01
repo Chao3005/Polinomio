@@ -53,13 +53,15 @@ public class Polinomio{
         for(int i=0; i<maxExponent+1; i++){ 
             ordenada.add(null); //va a rellenar maxExponent + 1 veces de null 
         }
-        for(int i=0; i<lista.size(); i++){ //para cada monomio en lista
-            ordenada.remove(maxExponent-lista.get(i).getExponente()); //se va a eliminar lo que este en el indice maxExponent-Exponente del monomio
-            ordenada.add(maxExponent-lista.get(i).getExponente(), lista.get(i));//(Ej, si el maxExp es 5 y el exp del monomio es 5, entonces va a borrar el null del indice 0)
+        for(int i=0; i<lista.size(); i++){ //para cada monomio en lista //se va a eliminar lo que este en el indice maxExponent-Exponente del monomio
+            if(ordenada.get(maxExponent-lista.get(i).getExponente())==null){
+                ordenada.set(maxExponent-lista.get(i).getExponente(), lista.get(i));
+            }
+                //(Ej, si el maxExp es 5 y el exp del monomio es 5, entonces va a borrar el null del indice 0)
         } //y se va a agregar en el indice 0 el monomio con mayor exponente
-        for(int j=0; j<maxExponent;j++){ //Para eliminar los nulls (si le pongo maxExpo+1 hay error en indice unu)
-            if(ordenada.get(j)==null){ //si el indice j es null entonces lo borra
-                ordenada.remove(j); //si no es null lo deja y pasa al siguiente indice
+        for(int i=0; i<maxExponent+1;i++){ //Para eliminar los nulls (si le pongo maxExpo+1 hay error en indice unu)
+            if(ordenada.get(i)==null){ //si el indice j es null entonces lo borra
+                ordenada.remove(i); //si no es null lo deja y pasa al siguiente indice
             }
         }
         Polinomio polinado= new Polinomio(ordenada); //no sé xq me da NullPointerException unu
